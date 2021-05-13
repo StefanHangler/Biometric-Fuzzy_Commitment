@@ -1,3 +1,8 @@
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+
 public class FuzzyCommitment {
 
     public String xorStrings(String inputData, String key){
@@ -16,5 +21,12 @@ public class FuzzyCommitment {
         return xorString.toString();
     }
 
+    public String SHA256hashing(String bits) throws NoSuchAlgorithmException {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] encodedhash = digest.digest(
+                bits.getBytes(StandardCharsets.UTF_8));
+        System.out.println(Arrays.toString(encodedhash));
 
+        return new String(encodedhash);
+    }
 }

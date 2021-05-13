@@ -1,10 +1,14 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 public class DemoTest {
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws FileNotFoundException, NoSuchAlgorithmException {
 
-        //store input data
+        /**store input data*/
         /*
         File file = new File("bit5.txt");
         //Scanner scanner = new Scanner(file);
@@ -32,17 +36,23 @@ public class DemoTest {
         System.out.println(ecc.getBinaryOfNumber(actualXORvalue,4));
          */
 
-        //enrollment process
+        /**key generation*/
+        String key = "0101010101010";
+        FuzzyCommitment fc = new FuzzyCommitment();
+        System.out.println("hashed key-bits: " + fc.SHA256hashing(key));
+
+        /**enrollment process*/
         String processedKey = "0110";
         ECCHamming ecc = new ECCHamming();
         System.out.println("without parity: " + processedKey);
         System.out.println("with parity:    " + ecc.addParity(processedKey));
 
-        //authentication process
+        /**authentication process*/
         String authenticationData = "0100011"; //Error on Position 5
         System.out.println("\n\nfuzzy Data: " + authenticationData + "  (Error on position 5)");
         System.out.println("corrected:  " + ecc.parityRemove(authenticationData, 0));
-        //key generation
+
+
 
 
 
