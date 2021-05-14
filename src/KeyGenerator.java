@@ -1,5 +1,10 @@
 public class KeyGenerator {
 
+    /**
+     * creates a random bit-string with given length
+     * @param lengthOfKey
+     * @return the random key
+     */
     public String randomKey(int lengthOfKey){
         StringBuilder randKey = new StringBuilder();
 

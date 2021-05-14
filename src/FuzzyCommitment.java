@@ -3,16 +3,29 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
+/**
+ * This class represents a fuzzy commitment scheme
+ *
+ * https://www.researchgate.net/publication/2577452_A_Fuzzy_Commitment_Scheme
+ */
 public class FuzzyCommitment {
 
     private final ArrayList<ArrayList<String>> enrollment;
     private final ECCHamming ecc;
 
+    /**
+     * creates a {@link FuzzyCommitment} object
+     */
     public FuzzyCommitment(){
         enrollment = new ArrayList<>();
         ecc = new ECCHamming();
     }
 
+    /**
+     * enrollment phase of the fuzzy commitment scheme
+     * @param biometricData
+     * @throws NoSuchAlgorithmException
+     */
     public void enrollment (String biometricData) throws NoSuchAlgorithmException {
         ArrayList<String> keyPair = new ArrayList<>();
         StringBuilder key;
@@ -39,6 +52,11 @@ public class FuzzyCommitment {
         this.enrollment.add(keyPair);
     }
 
+    /**
+     * the authentication phase of the fuzzy commitment scheme
+     * @param biometricData
+     * @throws NoSuchAlgorithmException
+     */
     public void authentication (String biometricData) throws NoSuchAlgorithmException {
         StringBuilder xor = new StringBuilder();
         String hashKey;
@@ -63,13 +81,19 @@ public class FuzzyCommitment {
 
             //check if the authentication was successful
             if(keyPair.get(1).equals(hashKey)) {
-                System.out.println("Authentication successful");
+                System.out.println("    Authentication successful");
                 return;
             }
         }
-        System.out.println("Authentication failed");
+        System.out.println("    Authentication failed");
     }
 
+    /**
+     * computes xor of two input strings
+     * @param inputData
+     * @param key
+     * @return xor of the two input strings
+     */
     public String xorStrings(String inputData, String key){
         StringBuilder xorString = new StringBuilder();
 
@@ -86,11 +110,16 @@ public class FuzzyCommitment {
         return xorString.toString();
     }
 
+    /**
+     * SHA-256 hashing of a string
+     * @param bits
+     * @return the encoded string
+     * @throws NoSuchAlgorithmException
+     */
     public String SHA256hashing(String bits) throws NoSuchAlgorithmException {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         byte[] encodedHash = digest.digest(
                 bits.getBytes(StandardCharsets.UTF_8));
-        //System.out.println(Arrays.toString(encodedHash));
 
         return new String(encodedHash);
     }

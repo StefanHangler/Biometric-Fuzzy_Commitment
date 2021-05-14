@@ -1,15 +1,21 @@
+import java.lang.reflect.Array;
 import java.security.NoSuchAlgorithmException;
 
 public class DemoTest {
     public static void main(String[] args) throws NoSuchAlgorithmException {
 
         FuzzyData data = new FuzzyData();
+        String[][] bitstrings = data.createBitstringPairs(100, 2048);
 
-        for(int i=0; i<100; i++){
+        int count = 1;
+
+        for(String[] strArr: bitstrings){
             FuzzyCommitment fz = new FuzzyCommitment();
-            String s = data.randomString(2048);
-            fz.enrollment(s);
-            fz.authentication(data.randomFlip(s));
+            System.out.println("*** Enrollment and Authentication Nr. " + count + " ***");
+            fz.enrollment(strArr[0]);
+            fz.authentication(strArr[1]);
+
+            count++;
         }
     }
 }

@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * This class represents the ECC-Hamming procedure and checks with parity bits
  * if there is an error between two bit-strings --> one bit-flip can be detected and corrected
  *
- * information to the procedure at: https://en.wikipedia.org/wiki/Hamming_code
+ * information about the procedure at: https://en.wikipedia.org/wiki/Hamming_code
  */
 public class ECCHamming {
 
@@ -79,7 +79,7 @@ public class ECCHamming {
     }
 
     /**
-     * remove the parity bits from a bit-string WITH parity bits and if there is one error detected
+     * removes the parity bits from a bit-string WITH parity bits and if there is one error detected
      * it will be corrected
      * @param inputBits bit-string with parity bits, have to be a similarity to the bit-string form the {@link ECCHamming#addParity(String)} bit-string
      * @param indexOfParityList to encode block 1 -> indexOfParityList = 0, encode block 2 -> indexOfParityList = 1 ...
