@@ -7,6 +7,13 @@ import java.util.Arrays;
 
 public class DemoTest {
     public static void main(String[] args) throws FileNotFoundException, NoSuchAlgorithmException {
+        FuzzyCommitment fz = new FuzzyCommitment();
+        FuzzyData data = new FuzzyData();
+
+        String s = data.randomString(2048);
+        fz.enrollment(s);
+        fz.authentication(s);
+    }
 
         /**store input data*/
         /*
@@ -36,27 +43,22 @@ public class DemoTest {
         System.out.println(ecc.getBinaryOfNumber(actualXORvalue,4));
          */
 
-
-        /**key generation*/
+        /*
+        //key generation
         String key = "0101010101010";
         FuzzyCommitment fc = new FuzzyCommitment();
         System.out.println("hashed key-bits: " + fc.SHA256hashing(key));
 
-        /**enrollment process*/
+        //enrollment process
         String processedKey = "0110";
         ECCHamming ecc = new ECCHamming();
         System.out.println("without parity: " + processedKey);
         System.out.println("with parity:    " + ecc.addParity(processedKey));
 
-        /**authentication process*/
+        //authentication process
         String authenticationData = "0100011"; //Error on Position 5
         System.out.println("\n\nfuzzy Data: " + authenticationData + "  (Error on position 5)");
         System.out.println("corrected:  " + ecc.parityRemove(authenticationData, 0));
 
-
-
-
-
-
-    }
+    }*/
 }

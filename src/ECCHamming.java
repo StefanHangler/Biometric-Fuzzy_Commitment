@@ -49,6 +49,7 @@ public class ECCHamming {
             }
         }
 
+        System.out.println("XOR-value: " + actualXORvalue);
         this.parityBitList.add(actualXORvalue); //store parity bit values
         parityValues = new StringBuilder(getBinaryOfNumber(actualXORvalue,numberOfParityBits));
         parityPos = 0; //reset postions of parity bits to set the correct values in bitstring
@@ -88,6 +89,7 @@ public class ECCHamming {
         }
 
         // XOR with the correct parity bit values to get the position of the wrong bit
+        System.out.println("parityBitList-length: " + this.parityBitList.size() + " --> index: " + indexOfParityList);
         errorPos = this.parityBitList.get(indexOfParityList) ^ actualXORvalue;
         //System.out.println("Error-Position: " + errorPos);
 

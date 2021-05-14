@@ -6,21 +6,10 @@ import java.util.Arrays;
 
 public class FuzzyCommitment {
 
-    //mit de indexe geht des eher ned so, ma kann ja mehrere enrollen, woher weiß i dann welches delta i brauch
     private final ArrayList<ArrayList<String>> enrollment;
-    //public int indexEnrollment;
-
-    //public int indexAuthentication;
-
-    //public String delta;
 
     public FuzzyCommitment(){
         enrollment = new ArrayList<>();
-        //indexEnrollment = 0;
-
-        //indexAuthentication = 0;
-
-        //delta = "";
     }
 
     public void enrollment (String biometricData) throws NoSuchAlgorithmException {
@@ -50,16 +39,12 @@ public class FuzzyCommitment {
         keyPair.add(hashKey);
 
         this.enrollment.add(keyPair);
-
-        //indexEnrollment++;
-
-        //nur für speichern mal
-        //delta = xor;
     }
 
     public void authentication (String biometricData) throws NoSuchAlgorithmException {
         ECCHamming ecc = new ECCHamming();
-        String xor, hashKey;
+        StringBuilder xor = new StringBuilder();
+        String hashKey;
         StringBuilder tryKey = new StringBuilder();
 
         // expansion of biometric data
@@ -67,11 +52,14 @@ public class FuzzyCommitment {
 
         // xor of every stored delta and check if any of these is equal to the hashKey
         for(ArrayList<String> keyPair : this.enrollment) {
-            xor = xorStrings(tryData, keyPair.get(0));
+            xor.append(xorStrings(tryData, keyPair.get(0)));
 
             // decode every 4 bit Block with the correct parity bits of the given index i
-            for (int i = 0; i < keyPair.get(0).length()/7; i++)
-                tryKey.append(ecc.parityRemove(xor, i));
+            int indexParity = 0;
+            for (int blockIndex = 0; blockIndex < keyPair.get(0).length(); blockIndex += 7) {
+                tryKey.append(ecc.parityRemove(xor.substring(blockIndex,blockIndex+7), indexParity));
+                indexParity++;
+            }
 
             //hash
             hashKey = SHA256hashing(tryKey.toString());
@@ -82,7 +70,6 @@ public class FuzzyCommitment {
                 return;
             }
         }
-
         System.out.println("Authentication failed");
     }
 
