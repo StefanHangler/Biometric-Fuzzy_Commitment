@@ -36,6 +36,7 @@ public class DemoTest {
         System.out.println(ecc.getBinaryOfNumber(actualXORvalue,4));
          */
 
+
         /**key generation*/
         String key = "0101010101010";
         FuzzyCommitment fc = new FuzzyCommitment();

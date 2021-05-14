@@ -1,27 +1,89 @@
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class FuzzyCommitment {
 
     //mit de indexe geht des eher ned so, ma kann ja mehrere enrollen, woher weiß i dann welches delta i brauch
-    public String[][] enrollment;
-    public int indexEnrollment;
+    private final ArrayList<ArrayList<String>> enrollment;
+    //public int indexEnrollment;
 
-    public String[][] authentication;
-    public int indexAuthentication;
+    //public int indexAuthentication;
 
-    public String delta;
+    //public String delta;
 
     public FuzzyCommitment(){
-        enrollment = new String[10][2];
-        indexEnrollment = 0;
+        enrollment = new ArrayList<>();
+        //indexEnrollment = 0;
 
-        authentication = new String[10][2];
-        indexAuthentication = 0;
+        //indexAuthentication = 0;
 
-        delta = "";
+        //delta = "";
+    }
+
+    public void enrollment (String biometricData) throws NoSuchAlgorithmException {
+        ArrayList<String> keyPair = new ArrayList<>();
+        StringBuilder key;
+        StringBuilder eccKey = new StringBuilder();
+
+        // key and hash of key
+        KeyGenerator keyGen = new KeyGenerator();
+        key = new StringBuilder(keyGen.randomKey(1172));
+        String hashKey = SHA256hashing(key.toString());
+
+        // ecc of key
+        ECCHamming ecc = new ECCHamming();
+
+        //add parity to every 4 bit block of the key
+        for(int i = 0; i < key.length(); i+=4)
+             eccKey.append(ecc.addParity(key.substring(i,i+4)));
+
+        // expansion of biometric data
+        String data = "000" + biometricData;
+
+        // xor of data and key (delta)
+        String delta = xorStrings(data, eccKey.toString());
+
+        keyPair.add(delta);
+        keyPair.add(hashKey);
+
+        this.enrollment.add(keyPair);
+
+        //indexEnrollment++;
+
+        //nur für speichern mal
+        //delta = xor;
+    }
+
+    public void authentication (String biometricData) throws NoSuchAlgorithmException {
+        ECCHamming ecc = new ECCHamming();
+        String xor, hashKey;
+        StringBuilder tryKey = new StringBuilder();
+
+        // expansion of biometric data
+        String tryData = "000" + biometricData;
+
+        // xor of every stored delta and check if any of these is equal to the hashKey
+        for(ArrayList<String> keyPair : this.enrollment) {
+            xor = xorStrings(tryData, keyPair.get(0));
+
+            // decode every 4 bit Block with the correct parity bits of the given index i
+            for (int i = 0; i < keyPair.get(0).length()/7; i++)
+                tryKey.append(ecc.parityRemove(xor, i));
+
+            //hash
+            hashKey = SHA256hashing(tryKey.toString());
+
+            //check if the authentication was successful
+            if(keyPair.get(1).equals(hashKey)) {
+                System.out.println("Authentication successful");
+                return;
+            }
+        }
+
+        System.out.println("Authentication failed");
     }
 
     public String xorStrings(String inputData, String key){
@@ -47,64 +109,5 @@ public class FuzzyCommitment {
         System.out.println(Arrays.toString(encodedhash));
 
         return new String(encodedhash);
-    }
-
-    public void enrollment (String biometricData) throws NoSuchAlgorithmException {
-
-        // key and hash of key
-        KeyGenerator keyGen = new KeyGenerator();
-        String key = keyGen.randomKey(1172);
-        String hashKey = SHA256hashing(key);
-
-        // ecc of key
-        ECCHamming ecc = new ECCHamming();
-        String eccKey = ecc.addParity(key);
-
-        // expansion of biometric data
-        String data = "000" + biometricData;
-
-        // xor of data and key (delta)
-        String xor = xorStrings(data, eccKey);
-
-        enrollment[indexEnrollment][0] = hashKey;
-        enrollment[indexEnrollment][1] = xor;
-
-        indexEnrollment++;
-
-
-        //nur für speichern mal
-        delta = xor;
-    }
-
-    public void authentication (String biometricData) throws NoSuchAlgorithmException {
-        ECCHamming ecc = new ECCHamming();
-
-        // expansion of biometric data
-        String tryData = "000" + biometricData;
-
-        // xor of data and delta
-        String xor = xorStrings(tryData, delta);
-
-        // decode
-        String tryKey = ecc.parityRemove(xor, 0);
-
-        // hash
-        String hashKey = SHA256hashing(tryKey);
-
-        authentication[indexAuthentication][0] = hashKey;
-        authentication[indexAuthentication][1] = delta;
-
-        indexAuthentication++;
-
-        /*
-        //überlegung für authentication
-        for (int i = 0; i < 10; i++){
-            delta = enrollment[i][1]
-            newKey = xor(tryData, delta)
-            newKey.removeparity
-            newHash = hash(xor)
-            wenn newHash == enrollment[i][0] --> successsss
-        }
-        */
     }
 }
