@@ -1,7 +1,3 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
-
 public class KeyGenerator {
 
     public String randomKey(int lengthOfKey){
@@ -14,10 +10,8 @@ public class KeyGenerator {
             else
                 randKey.append('1');
         }
-
         return randKey.toString();
     }
-
 }
 
 

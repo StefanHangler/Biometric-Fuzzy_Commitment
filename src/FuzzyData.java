@@ -28,7 +28,6 @@ public class FuzzyData {
         return bitstringPairs;
     }
 
-
     public String randomString(int lengthOfString){
         StringBuilder bString = new StringBuilder();
 
@@ -39,11 +38,8 @@ public class FuzzyData {
            else
                bString.append('1');
         }
-
         return bString.toString();
     }
-
-
 
     public String randomFlip(String bitstring){
         String randFlip = bitstring;
@@ -51,7 +47,7 @@ public class FuzzyData {
         int count = 0;
 
         for(int i = 0; i < randFlip.length(); i++){
-            int rand = (int) (Math.random()*(19)) + 1;
+            int rand = (int) (Math.random()*(25)) + 1;
             //System.out.println("Rand: " + rand);
             if(rand == 1){
                 if(randFlip.charAt(i) == '1'){
@@ -66,9 +62,8 @@ public class FuzzyData {
             }
         }
 
-        System.out.println("#flips: " + count);
-        System.out.println("Bitstring: " + randFlip);
+        //System.out.println("#flips: " + count);
+        //System.out.println("Bitstring: " + randFlip);
         return randFlip;
     }
-
 }

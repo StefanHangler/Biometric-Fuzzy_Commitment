@@ -2,14 +2,15 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class FuzzyCommitment {
 
     private final ArrayList<ArrayList<String>> enrollment;
+    private final ECCHamming ecc;
 
     public FuzzyCommitment(){
         enrollment = new ArrayList<>();
+        ecc = new ECCHamming();
     }
 
     public void enrollment (String biometricData) throws NoSuchAlgorithmException {
@@ -21,9 +22,6 @@ public class FuzzyCommitment {
         KeyGenerator keyGen = new KeyGenerator();
         key = new StringBuilder(keyGen.randomKey(1172));
         String hashKey = SHA256hashing(key.toString());
-
-        // ecc of key
-        ECCHamming ecc = new ECCHamming();
 
         //add parity to every 4 bit block of the key
         for(int i = 0; i < key.length(); i+=4)
@@ -42,7 +40,6 @@ public class FuzzyCommitment {
     }
 
     public void authentication (String biometricData) throws NoSuchAlgorithmException {
-        ECCHamming ecc = new ECCHamming();
         StringBuilder xor = new StringBuilder();
         String hashKey;
         StringBuilder tryKey = new StringBuilder();
@@ -57,7 +54,7 @@ public class FuzzyCommitment {
             // decode every 4 bit Block with the correct parity bits of the given index i
             int indexParity = 0;
             for (int blockIndex = 0; blockIndex < keyPair.get(0).length(); blockIndex += 7) {
-                tryKey.append(ecc.parityRemove(xor.substring(blockIndex,blockIndex+7), indexParity));
+                tryKey.append(ecc.removeParity(xor.substring(blockIndex,blockIndex+7), indexParity));
                 indexParity++;
             }
 
@@ -91,10 +88,10 @@ public class FuzzyCommitment {
 
     public String SHA256hashing(String bits) throws NoSuchAlgorithmException {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] encodedhash = digest.digest(
+        byte[] encodedHash = digest.digest(
                 bits.getBytes(StandardCharsets.UTF_8));
-        System.out.println(Arrays.toString(encodedhash));
+        //System.out.println(Arrays.toString(encodedHash));
 
-        return new String(encodedhash);
+        return new String(encodedHash);
     }
 }
